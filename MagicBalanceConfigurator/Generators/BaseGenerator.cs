@@ -14,7 +14,7 @@ namespace MagicBalanceConfigurator.Generators
         protected const int MaxItems = 9999;
         protected const int MaxModsCount = 10;
         protected const int MaxModsTextCount = 5;
-        protected const double MaxModPower = 10;
+        protected const double MaxModPower = 20;
         protected const double MinModPower = 0.1;
 
         private int _seed;
@@ -111,6 +111,7 @@ namespace MagicBalanceConfigurator.Generators
         protected StringBuilder ItemSection;
         protected StringBuilder LootTableSection;
         protected StringBuilder LootTableSection2;
+        protected StringBuilder LootTableSection3;
         protected StringBuilder StringSection;
         protected string TierPrefix;
         protected string ItemIdPrefix;
@@ -145,6 +146,7 @@ namespace MagicBalanceConfigurator.Generators
             ItemSection = new StringBuilder();
             LootTableSection = new StringBuilder();
             LootTableSection2 = new StringBuilder();
+            LootTableSection3 = new StringBuilder();
             StringSection = new StringBuilder();
             int itemsProcessed = 0;
 
@@ -156,6 +158,7 @@ namespace MagicBalanceConfigurator.Generators
                 ProcessTemplate(currentItem, itemIdInfo, modsSet);
                 ProcessLootTable(currentItem, itemIdInfo);
                 ProcessLootTable2(currentItem, itemIdInfo);
+                ProcessLootTable3(currentItem, itemIdInfo);
                 itemsProcessed += 1;
                 if (itemsProcessed % NotifyRate == 0)
                 {
@@ -168,6 +171,7 @@ namespace MagicBalanceConfigurator.Generators
 
             PostProcessLootTable();
             PostProcessLootTable2();
+            PostProcessLootTable3();
             RandController.AppendItemsNameBundle(StringSection);
             RandController.AppendRandItemsMeta(GetMeta());
             Output.Append(CommonTemplates.RndFileMetaBlock);
@@ -177,6 +181,8 @@ namespace MagicBalanceConfigurator.Generators
             Output.Append(LootTableSection);
             Output.Append("\r\n");
             Output.Append(LootTableSection2);
+            Output.Append("\r\n");
+            Output.Append(LootTableSection3);
             SaveResult();
             RandController.SendStatusMessage($"{GeneratorSchemaName}: completed.");
         }
@@ -237,6 +243,7 @@ namespace MagicBalanceConfigurator.Generators
             template.Replace("[ModsText]", slotsData.ModTextSection.TrimEnd(CommonTemplates.EndTrimChars));
             template.Replace("[ModsEquip]", slotsData.ModEquipSection.TrimEnd(CommonTemplates.EndTrimChars));
             template.Replace("[ModsUnEquip]", slotsData.ModUnEquipSection.TrimEnd(CommonTemplates.EndTrimChars));
+            template.Replace("[PrintModsText]", slotsData.modPrintTextSection.TrimEnd(CommonTemplates.EndTrimChars));
             return template.ToString();
         }
         /// <summary>
@@ -280,6 +287,14 @@ namespace MagicBalanceConfigurator.Generators
                 lootTableTemplate.Replace("else ", string.Empty);
             LootTableSection2.AppendLine(lootTableTemplate.ToString());
         }
+
+        protected virtual void ProcessLootTable3(int itemIndex, (string FullId, string Id) itemIdInfo)
+        {
+            StringBuilder lootTableTemplate = new StringBuilder($"\t{CommonTemplates.ItemLootTableTemplateString3}");
+            lootTableTemplate.Replace("[ItemIndex]", itemIndex.ToString());
+            lootTableTemplate.Replace("[ItemId]", itemIdInfo.FullId);
+            LootTableSection3.AppendLine(lootTableTemplate.ToString());
+        }
         /// <summary>
         /// Finish loot table generation
         /// </summary>
@@ -306,15 +321,33 @@ namespace MagicBalanceConfigurator.Generators
             lootTable.Append(CommonTemplates.LootTableSectionEnd);
             LootTableSection2 = lootTable;
         }
+
+        protected virtual void PostProcessLootTable3()
+        {
+            StringBuilder lootTable = new StringBuilder(CommonTemplates.ItemLootTableHeader3);
+            lootTable.Replace("[NameType]", "\"[Tier] [ItemType]\"");
+            lootTable.Replace("[Tier]", TierPrefix.TrimEnd('_'));
+            lootTable.Replace("[ItemType]", ItemType);
+            lootTable.Replace("[ItemsCount]", (ItemsCount).ToString());
+            lootTable.Replace("[Price]", GetItemPrice().ToString());
+            lootTable.Replace("[Sceme]", CommonTemplates.pocketSceme);
+            lootTable.Replace("[Visual]", CommonTemplates.pocketVisual);
+            lootTable.Append($"\r\n{LootTableSection3.ToString().TrimEnd(CommonTemplates.EndTrimChars)}");
+            lootTable.Append(CommonTemplates.LootTableSectionEnd2);
+            LootTableSection3 = lootTable;
+        }
         /// <summary>
         /// Build preprocessed slot data to inject in ItemTemplate
         /// instead placeholders
         /// </summary>
-        private (string ModTextSection, string ModEquipSection, string ModUnEquipSection) BuildTemplateSlotsData(int modsCount)
+        private (string ModTextSection, string ModEquipSection, string ModUnEquipSection, string modPrintTextSection) BuildTemplateSlotsData(int modsCount)
         {
             StringBuilder textSection = new StringBuilder();
             StringBuilder equipSection = new StringBuilder();
             StringBuilder unequipSection = new StringBuilder();
+            StringBuilder printTextSection = new StringBuilder();
+
+            printTextSection.Append($"\tAI_PrintBonus(ConcatStrings([NameId], \":\"));\r\n");
 
             int textIndex = modsCount < 5 ? 1 : 0; 
             for (int index = 0; index < modsCount; index++)
@@ -323,22 +356,25 @@ namespace MagicBalanceConfigurator.Generators
                 StringBuilder textLine_value = new StringBuilder(CommonTemplates.ItemModTextString_Value);
                 StringBuilder equipLine = new StringBuilder(CommonTemplates.ItemModEquipString);
                 StringBuilder unequipLine = new StringBuilder(CommonTemplates.ItemModUnEquipString);
+                StringBuilder printTextLine = new StringBuilder(CommonTemplates.ItemModPrintTextString);
 
                 textLine_text.Replace("[Index]", textIndex.ToString());
                 textLine_value.Replace("[Index]", textIndex.ToString());
                 equipLine.Replace("[Index]", index.ToString());
                 unequipLine.Replace("[Index]", index.ToString());
+                printTextLine.Replace("[Index]", textIndex.ToString());
 
                 if (textIndex <= MaxModsTextCount)
                 {
                     textSection.Append($"\t{textLine_text}\r\n");
                     textSection.Append($"\t{textLine_value}\r\n");
                 }
+                printTextSection.Append($"\t{printTextLine}\r\n");
                 equipSection.Append($"\t{equipLine}\r\n");
                 unequipSection.Append($"\t{unequipLine}\r\n");
                 textIndex += 1;
             }
-            return (textSection.ToString(), equipSection.ToString(), unequipSection.ToString());
+            return (textSection.ToString(), equipSection.ToString(), unequipSection.ToString(), printTextSection.ToString());
         }
 
         /// <summary>
@@ -396,7 +432,7 @@ namespace MagicBalanceConfigurator.Generators
         }
 
         protected virtual ItemMod[] GetItemsMods() => 
-            ItemModsProvider.ItemMods.Where(x => x.IsEnabled && x.Id < 100).ToArray();
+            ItemModsProvider.ItemMods.Where(x => x.IsEnabled && (x.Id < 100 || x.Id > 200)).ToArray();
 
         /// <summary>
         /// Get any random mod from allowed list

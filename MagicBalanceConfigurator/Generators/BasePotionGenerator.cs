@@ -20,7 +20,7 @@ namespace MagicBalanceConfigurator.Generators
         }
 
         protected override ItemMod[] GetItemsMods() =>
-            ItemModsProvider.ItemMods.Where(x => x.IsEnabled && x.Id > 100).ToArray();
+            ItemModsProvider.ItemMods.Where(x => x.IsEnabled && x.Id > 100 && x.Id < 200).ToArray();
 
         protected override void PostProcessTemplate(StringBuilder template)
         {

@@ -69,6 +69,18 @@ namespace MagicBalanceConfigurator
                 new Pot_T2_Generator(this),
                 new Pot_T3_Generator(this),
                 new Pot_T4_Generator(this),
+
+                new Rob_T1_Generator(this),
+                new Rob_T2_Generator(this),
+                new Rob_T3_Generator(this),
+                new Rob_T4_Generator(this),
+
+                new Stf_T1_Generator(this),
+                new Stf_T2_Generator(this),
+                new Stf_T3_Generator(this),
+                new Stf_T4_Generator(this),
+
+                new Grm_T1_Generator(this),
             };
         }
 

@@ -50,5 +50,17 @@ namespace MagicBalanceConfigurator
         public const string Pot_T3_FileName = "StExt_Pot_T3_generated.d";
         public const string Pot_T2_FileName = "StExt_Pot_T2_generated.d";
         public const string Pot_T1_FileName = "StExt_Pot_T1_generated.d";
+        public const string Rob_T4_FileName = "StExt_Rob_T4_generated.d";
+        public const string Rob_T3_FileName = "StExt_Rob_T3_generated.d";
+        public const string Rob_T2_FileName = "StExt_Rob_T2_generated.d";
+        public const string Rob_T1_FileName = "StExt_Rob_T1_generated.d";
+        public const string Stf_T4_FileName = "StExt_Stf_T4_generated.d";
+        public const string Stf_T3_FileName = "StExt_Stf_T3_generated.d";
+        public const string Stf_T2_FileName = "StExt_Stf_T2_generated.d";
+        public const string Stf_T1_FileName = "StExt_Stf_T1_generated.d";
+        public const string Grm_T4_FileName = "StExt_Grm_T4_generated.d";
+        public const string Grm_T3_FileName = "StExt_Grm_T3_generated.d";
+        public const string Grm_T2_FileName = "StExt_Grm_T2_generated.d";
+        public const string Grm_T1_FileName = "StExt_Grm_T1_generated.d";
     }
 }

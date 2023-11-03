@@ -71,10 +71,14 @@
     <Compile Include="Consts.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Generators\Aml_T1_Generator .cs" />
+    <Compile Include="Generators\BaseGrimoireGenerator.cs" />
+    <Compile Include="Generators\BaseRobeGenerator.cs" />
+    <Compile Include="Generators\BaseStaffGenerator.cs" />
     <Compile Include="Generators\Blt_T1_Generator.cs" />
     <Compile Include="Generators\Blt_T2_Generator.cs" />
     <Compile Include="Generators\Blt_T3_Generator.cs" />
     <Compile Include="Generators\Blt_T4_Generator.cs" />
+    <Compile Include="Generators\Grm_T1_Generator.cs" />
     <Compile Include="Generators\ItemModsProvider.cs" />
     <Compile Include="Generators\BasePotionGenerator.cs" />
     <Compile Include="Generators\Pot_T4_Generator.cs" />
@@ -90,6 +94,14 @@
     <Compile Include="Generators\Aml_T4_Generator.cs" />
     <Compile Include="Generators\BaseGenerator.cs" />
     <Compile Include="Generators\ItemModsSet.cs" />
+    <Compile Include="Generators\Rob_T1_Generator.cs" />
+    <Compile Include="Generators\Rob_T2_Generator.cs" />
+    <Compile Include="Generators\Rob_T3_Generator.cs" />
+    <Compile Include="Generators\Rob_T4_Generator.cs" />
+    <Compile Include="Generators\Stf_T1_Generator.cs" />
+    <Compile Include="Generators\Stf_T2_Generator.cs" />
+    <Compile Include="Generators\Stf_T3_Generator.cs" />
+    <Compile Include="Generators\Stf_T4_Generator.cs" />
     <Compile Include="HelpWindow.cs">
       <SubType>Form</SubType>
     </Compile>
